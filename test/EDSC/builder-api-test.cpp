@@ -491,7 +491,7 @@ TEST_FUNC(zeroextendi_op_i1_to_i8) {
   //      CHECK: affine.for %{{.*}} = 0 to 1 {
   // CHECK-NEXT:   affine.for %{{.*}} = 0 to 1 {
   //  CHECK-NEXT:     %[[SRC:.*]] = affine.load
-  //  CHECK:          zexti %[[SRC]] : i1 to i8 
+  //  CHECK:          zexti %[[SRC]] : i1 to i8
   // clang-format on
   f.print(llvm::outs());
   f.erase();
