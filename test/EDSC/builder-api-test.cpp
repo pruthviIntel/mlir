@@ -479,7 +479,7 @@ TEST_FUNC(zeroextendi_op_i1_to_i8) {
   ValueHandle zero = constant_index(0), one = constant_index(1);
   MemRefView vA(f.getArgument(0));
   IndexedValue A(f.getArgument(0));
-  IndexHandle i;
+  IndexHandle i, j;
   AffineLoopNestBuilder({&i, &j}, {zero, zero}, {one, one}, {1, 1})([&]{
     // This test exercises IndexedValue::operator Value*.
     // Without it, one must force conversion to ValueHandle as such:
@@ -490,8 +490,8 @@ TEST_FUNC(zeroextendi_op_i1_to_i8) {
   // CHECK-LABEL: @select_op
   //      CHECK: affine.for %{{.*}} = 0 to 1 {
   // CHECK-NEXT:   affine.for %{{.*}} = 0 to 1 {
-  //  CHECK-DAG:     {{.*}} = affine.load
-  //  CHECK-DAG:     {{.*}} = zexti
+  //  CHECK-NEXT:     %[[SRC:.*]] = affine.load
+  //  CHECK:          zexti %[[SRC]] : i1 to i8 
   // clang-format on
   f.print(llvm::outs());
   f.erase();
