@@ -215,7 +215,6 @@ using select = ValueBuilder<SelectOp>;
 using std_load = ValueBuilder<LoadOp>;
 using std_store = OperationBuilder<StoreOp>;
 using subi = ValueBuilder<SubIOp>;
-using vector_type_cast = ValueBuilder<vector::TypeCastOp>;
 using view = ValueBuilder<ViewOp>;
 using zero_extendi = ValueBuilder<ZeroExtendIOp>;
 using sign_extendi = ValueBuilder<SignExtendIOp>;
