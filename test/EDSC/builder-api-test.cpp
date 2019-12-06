@@ -487,7 +487,7 @@ TEST_FUNC(zeroextendi_op_i1_to_i8) {
     edsc::intrinsics::zero_extendi(*A(i, j), i8Type);
   });
 
-  // CHECK-LABEL: @select_op
+  // CHECK-LABEL: @zero_extendi_op
   //      CHECK: affine.for %{{.*}} = 0 to 1 {
   // CHECK-NEXT:   affine.for %{{.*}} = 0 to 1 {
   //  CHECK-NEXT:     %[[SRC:.*]] = affine.load
@@ -520,7 +520,7 @@ TEST_FUNC(signextendi_op_i1_to_i8) {
     edsc::intrinsics::sign_extendi(*A(i, j), i8Type);
   });
 
-  // CHECK-LABEL: @select_op
+  // CHECK-LABEL: @sign_extendi_op
   //      CHECK: affine.for %{{.*}} = 0 to 1 {
   // CHECK-NEXT:   affine.for %{{.*}} = 0 to 1 {
   //  CHECK-NEXT:     %[[SRC:.*]] = affine.load
