@@ -54,6 +54,11 @@ struct PassManagerOptions {
   llvm::cl::opt<bool> printAfterAll{"print-ir-after-all",
                                     llvm::cl::desc("Print IR after each pass"),
                                     llvm::cl::init(false)};
+  llvm::cl::opt<bool> printAfterChange{
+      "print-ir-after-change",
+      llvm::cl::desc(
+          "When printing the IR after a pass, only print if the IR changed"),
+      llvm::cl::init(false)};
   llvm::cl::opt<bool> printModuleScope{
       "print-ir-module-scope",
       llvm::cl::desc("When printing IR for print-ir-[before|after]{-all} "
@@ -100,7 +105,7 @@ struct PassManagerOptions {
 };
 } // end anonymous namespace
 
-static llvm::ManagedStatic<llvm::Optional<PassManagerOptions>> options;
+static llvm::ManagedStatic<Optional<PassManagerOptions>> options;
 
 /// Add an IR printing instrumentation if enabled by any 'print-ir' flags.
 void PassManagerOptions::addPrinterInstrumentation(PassManager &pm) {
@@ -139,7 +144,7 @@ void PassManagerOptions::addPrinterInstrumentation(PassManager &pm) {
 
   // Otherwise, add the IR printing instrumentation.
   pm.enableIRPrinting(shouldPrintBeforePass, shouldPrintAfterPass,
-                      printModuleScope, llvm::errs());
+                      printModuleScope, printAfterChange, llvm::errs());
 }
 
 /// Add a pass timing instrumentation if enabled by 'pass-timing' flags.

@@ -437,9 +437,9 @@ public:
   void printLocation(LocationAttr loc);
 
   void printAffineMap(AffineMap map);
-  void printAffineExpr(
-      AffineExpr expr,
-      llvm::function_ref<void(unsigned, bool)> printValueName = nullptr);
+  void
+  printAffineExpr(AffineExpr expr,
+                  function_ref<void(unsigned, bool)> printValueName = nullptr);
   void printAffineConstraint(AffineExpr expr, bool isEq);
   void printIntegerSet(IntegerSet set);
 
@@ -463,7 +463,7 @@ protected:
   };
   void printAffineExprInternal(
       AffineExpr expr, BindingStrength enclosingTightness,
-      llvm::function_ref<void(unsigned, bool)> printValueName = nullptr);
+      function_ref<void(unsigned, bool)> printValueName = nullptr);
 
   /// The output stream for the printer.
   raw_ostream &os;
@@ -1175,13 +1175,13 @@ void ModulePrinter::printDialectType(Type type) {
 //===----------------------------------------------------------------------===//
 
 void ModulePrinter::printAffineExpr(
-    AffineExpr expr, llvm::function_ref<void(unsigned, bool)> printValueName) {
+    AffineExpr expr, function_ref<void(unsigned, bool)> printValueName) {
   printAffineExprInternal(expr, BindingStrength::Weak, printValueName);
 }
 
 void ModulePrinter::printAffineExprInternal(
     AffineExpr expr, BindingStrength enclosingTightness,
-    llvm::function_ref<void(unsigned, bool)> printValueName) {
+    function_ref<void(unsigned, bool)> printValueName) {
   const char *binopSpelling = nullptr;
   switch (expr.getKind()) {
   case AffineExprKind::SymbolId: {
@@ -1486,10 +1486,10 @@ public:
   /// SSA values in namesToUse.  This may only be used for IsolatedFromAbove
   /// operations.  If any entry in namesToUse is null, the corresponding
   /// argument name is left alone.
-  void shadowRegionArgs(Region &region, ArrayRef<Value *> namesToUse) override;
+  void shadowRegionArgs(Region &region, ValueRange namesToUse) override;
 
   void printAffineMapOfSSAIds(AffineMapAttr mapAttr,
-                              ArrayRef<Value *> operands) override {
+                              ValueRange operands) override {
     AffineMap map = mapAttr.getValue();
     unsigned numDims = map.getNumDims();
     auto printValueName = [&](unsigned pos, bool isSymbol) {
@@ -1851,8 +1851,7 @@ void OperationPrinter::printValueIDImpl(Value *value, bool printResultNo,
 /// SSA values in namesToUse.  This may only be used for IsolatedFromAbove
 /// operations.  If any entry in namesToUse is null, the corresponding
 /// argument name is left alone.
-void OperationPrinter::shadowRegionArgs(Region &region,
-                                        ArrayRef<Value *> namesToUse) {
+void OperationPrinter::shadowRegionArgs(Region &region, ValueRange namesToUse) {
   assert(!region.empty() && "cannot shadow arguments of an empty region");
   assert(region.front().getNumArguments() == namesToUse.size() &&
          "incorrect number of names passed in");

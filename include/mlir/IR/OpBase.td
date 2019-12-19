@@ -1242,7 +1242,11 @@ class AllAttrConstraintsOf<list<AttrConstraint> constraints> : AttrConstraint<
 
 class IntMinValue<int n> : AttrConstraint<
     CPred<"$_self.cast<IntegerAttr>().getInt() >= " # n>,
-    "whose minimal value is " # n>;
+    "whose minimum value is " # n>;
+
+class IntMaxValue<int n> : AttrConstraint<
+    CPred<"$_self.cast<IntegerAttr>().getInt() <= " # n>,
+    "whose maximum value is " # n>;
 
 class ArrayMinCount<int n> : AttrConstraint<
     CPred<"$_self.cast<ArrayAttr>().size() >= " # n>,
@@ -1335,6 +1339,8 @@ class PredOpTrait<string descr, Pred pred> : OpTrait {
 def Broadcastable  : NativeOpTrait<"BroadcastableTwoOperandsOneResult">;
 // X op Y == Y op X
 def Commutative  : NativeOpTrait<"IsCommutative">;
+// Op behaves like a function.
+def FunctionLike : NativeOpTrait<"FunctionLike">;
 // Op is isolated from above.
 def IsolatedFromAbove : NativeOpTrait<"IsIsolatedFromAbove">;
 // Op results are float or vectors/tensors thereof.
@@ -1419,7 +1425,8 @@ class OpInterfaceTrait<string name> : NativeOpTrait<""> {
 // Note: non-static interface methods have an implicit 'op' parameter
 // corresponding to an instance of the derived operation.
 class InterfaceMethod<string desc, string retTy, string methodName,
-                      dag args = (ins), code methodBody = [{}]> {
+                      dag args = (ins), code methodBody = [{}],
+                      code defaultImplementation = [{}]> {
   // A human-readable description of what this method does.
   string description = desc;
 
@@ -1434,12 +1441,17 @@ class InterfaceMethod<string desc, string retTy, string methodName,
 
   // An optional body to the method.
   code body = methodBody;
+
+  // An optional default implementation of the method.
+  code defaultBody = defaultImplementation;
 }
 
 // This class represents a single static interface method.
 class StaticInterfaceMethod<string desc, string retTy, string methodName,
-                            dag args = (ins), code methodBody = [{}]>
-    : InterfaceMethod<desc, retTy, methodName, args, methodBody>;
+                            dag args = (ins), code methodBody = [{}],
+                            code defaultImplementation = [{}]>
+    : InterfaceMethod<desc, retTy, methodName, args, methodBody,
+                      defaultImplementation>;
 
 // OpInterface represents an interface regarding an op.
 class OpInterface<string name> : OpInterfaceTrait<name> {
